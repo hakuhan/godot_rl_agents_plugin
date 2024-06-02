@@ -1,0 +1,26 @@
+import os
+import sys
+Import('env')
+
+onnx_env = env.Clone()
+
+onnx_env.Append(CPPPATH=["."])
+onnx_env.Append(CPPPATH=["include/"])
+
+sources = Glob("*.cpp")
+sources.append(Glob("include/*.cpp"))
+
+# libs
+onnx_env.Append(LIBPATH=['lib'])
+onnx_env.Append(LINKFLAGS=['-Wl,-rpath,$ORIGIN'])
+if onnx_env["platform"] == "windows":
+    onnx_env.Append(LIBS=['onnxruntime'])
+else:
+    onnx_env.Append(LIBS=['libonnxruntime'])
+
+if onnx_env["platform"] == "macos":
+    library = onnx_env.SharedLibrary("#addons/godot_rl_agents/onnx/libs/libgdonnx.{}.{}.framework/libgdonnx.{}.{}".format(onnx_env["platform"], onnx_env["target"], onnx_env["platform"], onnx_env["target"]), source=sources)
+else:
+    library = onnx_env.SharedLibrary("#addons/godot_rl_agents/onnx/libs/libgdonnx{}{}".format(onnx_env["suffix"], onnx_env["SHLIBSUFFIX"]), source=sources)
+
+Default(library)

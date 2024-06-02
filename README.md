@@ -1,4 +1,8 @@
-
+# Create GDExtension For ONNX
+* I just generated linux version by: "scons -j 18 separate_debug_symbols=yes use_static_cpp=no". ONNXRuntime is here: https://github.com/microsoft/onnxruntime/releases/tag/v1.18.0
+* I comment fexception("// throw Ort::Exception(string, code)" is modified around line: 77 and 78) in onnxruntime_cxx_api.h because I am lazy:).
+* I removed mac libs because they are more than 50 MB.
+ 
 # Godot RL Agents
 
 This repository contains the Godot 4 asset / plugin for the Godot RL Agents library, you can find out more about the library on its Github page [here](https://github.com/edbeeching/godot_rl_agents).
