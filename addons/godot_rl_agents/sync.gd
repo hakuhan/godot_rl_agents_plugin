@@ -1,11 +1,19 @@
 extends Node
+class_name Sync
 
 # --fixed-fps 2000 --disable-render-loop
 
-enum ControlModes { HUMAN, TRAINING, ONNX_INFERENCE }
+enum ControlModes {
+    HUMAN, ## Test the environment manually
+    TRAINING, ## Train a model
+    ONNX_INFERENCE ## Load a pretrained model using an .onnx file
+}
 @export var control_mode: ControlModes = ControlModes.TRAINING
+## Action will be repeated for n frames (Godot physics steps). 
 @export_range(1, 10, 1, "or_greater") var action_repeat := 8
+## Speeds up the physics in the environment to enable faster training.
 @export_range(0, 10, 0.1, "or_greater") var speed_up := 1.0
+## The path to a trained .onnx model file to use for inference (only needed for the 'Onnx Inference' control mode).
 @export var onnx_model_path := ""
 
 # Onnx model stored for each requested path
@@ -51,7 +59,7 @@ var _obs_space_training: Array[Dictionary] = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	await get_tree().root.ready
+	await get_parent().ready
 	get_tree().set_pause(true)
 	_initialize()
 	await get_tree().create_timer(1.0).timeout
